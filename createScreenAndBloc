@@ -1,0 +1,42 @@
+#!/bin/sh
+
+# Screenクラスの名前(大文字キャメルケース)
+screenName=$1;
+
+# Flutterのプロジェクトの名前(小文字スネークケース)
+packageName=$2;
+
+# screenNameの小文字スネークケース
+lower=`echo ${screenName} | sed -E 's/(.)([A-Z])/\1_\2/g' | tr '[A-Z]' '[a-z]'`
+
+mkdir $lower
+cd $lower
+
+# Screenクラスファイルの生成
+echo "import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:${packageName}/bloc/${lower}/${lower}_bloc.dart';
+import 'package:${packageName}/bloc/${lower}/${lower}_state.dart';
+
+class ${screenName}ScreenView extends StatelessWidget {
+  ${screenName}ScreenView({Key? key}) : super(key: key);
+
+  final _bloc = ${screenName}Bloc();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<${screenName}Bloc, ${screenName}State>(
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(),
+          body: Container(),
+        );
+      },
+      bloc: _bloc,
+    );
+  }
+}" >> ${lower}_screen_view.dart
+
+# Blocクラスを作成する
+cd ../../bloc
+createBloc $screenName $packageName;
