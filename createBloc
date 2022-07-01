@@ -44,26 +44,25 @@ class OnFirstRequest extends ${blocName}Event {}" >> ${lower}_event.dart
 
 # Stateクラスファイルの生成
 echo "import 'package:equatable/equatable.dart';
-import 'package:${packageName}/enum/request_status.dart';
 
 class ${blocName}State extends Equatable {
-  final RequestStatus? requestStatus;
+  final String title;
 
   const ${blocName}State({
-    this.requestStatus,
+    this.title = '',
   });
 
   ${blocName}State copyWith({
-    RequestStatus? requestStatus,
+    String? title,
   }) {
     return ${blocName}State(
-      requestStatus: requestStatus ?? RequestStatus.idle,
+      title: title ?? this.title,
     );
   }
 
   @override
   List<Object?> get props => [
-        requestStatus,
+        title,
       ];
 }" >> ${lower}_state.dart
 
