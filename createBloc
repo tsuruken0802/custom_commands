@@ -1,0 +1,73 @@
+#!/bin/sh
+
+# Blocクラスの名前(大文字キャメルケース)
+blocName=$1;
+
+# Flutterのプロジェクトの名前(小文字スネークケース)
+packageName=$2;
+
+# blocNameの小文字スネークケース
+lower=`echo ${blocName} | sed -E 's/(.)([A-Z])/\1_\2/g' | tr '[A-Z]' '[a-z]'`
+
+mkdir $lower
+cd $lower
+
+# Blocクラスファイルの生成
+echo "import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:${packageName}/bloc/${lower}/${lower}_event.dart';
+import 'package:${packageName}/bloc/${lower}/${lower}_service.dart';
+import 'package:${packageName}/bloc/${lower}/${lower}_state.dart';
+
+class ${blocName}Bloc extends Bloc<${blocName}Event, ${blocName}State> {
+  late final ${blocName}Service _service;
+
+  ${blocName}Bloc() : super(const ${blocName}State()) {
+    _service = ${blocName}ServiceImpl();
+    on<OnFirstRequest>(_onFirstRequest);
+    add(OnFirstRequest());
+  }
+
+  _onFirstRequest(OnFirstRequest event, Emitter<${blocName}State> emit) async {}
+}" >> ${lower}_bloc.dart
+
+# イベントクラスファイルの生成
+echo "import 'package:equatable/equatable.dart';
+
+abstract class ${blocName}Event extends Equatable {
+  const ${blocName}Event();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class OnFirstRequest extends ${blocName}Event {}" >> ${lower}_event.dart
+
+# Stateクラスファイルの生成
+echo "import 'package:equatable/equatable.dart';
+import 'package:${packageName}/enum/request_status.dart';
+
+class ${blocName}State extends Equatable {
+  final RequestStatus? requestStatus;
+
+  const ${blocName}State({
+    this.requestStatus,
+  });
+
+  ${blocName}State copyWith({
+    RequestStatus? requestStatus,
+  }) {
+    return ${blocName}State(
+      requestStatus: requestStatus ?? RequestStatus.idle,
+    );
+  }
+
+  @override
+  List<Object?> get props => [
+        requestStatus,
+      ];
+}" >> ${lower}_state.dart
+
+# サービスクラスファイルの生成
+echo "abstract class ${blocName}Service {}
+
+class ${blocName}ServiceImpl extends ${blocName}Service {}" >> ${lower}_service.dart
