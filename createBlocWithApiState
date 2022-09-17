@@ -40,25 +40,32 @@ abstract class ${blocName}Event extends Equatable {
 class OnFirstRequest extends ${blocName}Event {}" >> ${lower}_event.dart
 
 # Stateクラスファイルの生成
-echo "import 'package:equatable/equatable.dart';
+echo "import 'package:${packageName}/enum/api_request_status.dart';
+import 'package:${packageName}/mixin/api_request_state.dart';
 
 class ${blocName}State extends Equatable {
-  final String title;
 
   const ${blocName}State({
-    this.title = '',
-  });
+    ApiRequestStatus requestStatus = ApiRequestStatus.idle,
+    String? errorMessage,
+  }) : super(
+          requestStatus: requestStatus,
+          errorMessage: errorMessage,
+        );
 
   ${blocName}State copyWith({
-    String? title,
+    ApiRequestStatus? apiRequestStatus,
+    String? apiErrorMessage,
   }) {
     return ${blocName}State(
-      title: title ?? this.title,
+      requestStatus: apiRequestStatus ?? ApiRequestStatus.idle,
+      errorMessage: apiErrorMessage,
     );
   }
 
   @override
   List<Object?> get props => [
-        title,
+        requestStatus,
+        errorMessage,
       ];
 }" >> ${lower}_state.dart

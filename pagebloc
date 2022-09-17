@@ -18,8 +18,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:${packageName}/bloc/${lower}/${lower}_bloc.dart';
 import 'package:${packageName}/bloc/${lower}/${lower}_state.dart';
 
-class ${screenName}ScreenView extends StatelessWidget {
-  ${screenName}ScreenView({Key? key}) : super(key: key);
+class ${screenName}Page extends StatelessWidget {
+  ${screenName}Page({Key? key,}) : super(key: key);
 
   final _bloc = ${screenName}Bloc();
 
@@ -35,7 +35,7 @@ class ${screenName}ScreenView extends StatelessWidget {
       bloc: _bloc,
     );
   }
-}" >> ${lower}_screen_view.dart
+}" >> ${lower}_page.dart
 
 # Blocクラスを作成する
 cd ../../bloc
