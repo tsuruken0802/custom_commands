@@ -43,7 +43,7 @@ class OnFirstRequest extends ${blocName}Event {}" >> ${lower}_event.dart
 echo "import 'package:${packageName}/enum/api_request_status.dart';
 import 'package:${packageName}/mixin/api_request_state.dart';
 
-class ${blocName}State extends Equatable {
+class ${blocName}State extends ApiRequestState {
 
   const ${blocName}State({
     ApiRequestStatus requestStatus = ApiRequestStatus.idle,

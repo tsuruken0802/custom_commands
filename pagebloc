@@ -39,4 +39,4 @@ class ${screenName}Page extends StatelessWidget {
 
 # Blocクラスを作成する
 cd ../../bloc
-createBloc $screenName $packageName;
+createBlocWithApiState $screenName $packageName;
