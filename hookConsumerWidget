@@ -1,0 +1,29 @@
+#!/bin/sh
+
+# Pageクラスの名前(大文字キャメルケース)
+pageName=$1;
+
+# Flutterのプロジェクトの名前(小文字スネークケース)
+packageName=$2;
+
+# pageNameの小文字スネークケース
+lower=`echo ${pageName} | sed -E 's/(.)([A-Z])/\1_\2/g' | tr '[A-Z]' '[a-z]'`
+
+mkdir $lower
+cd $lower
+
+# Screenクラスファイルの生成
+echo "import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+class ${pageName}Page extends HookConsumerWidget {
+  const ${pageName}Page({Key? key,}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Container(),
+    );
+  }
+}" >> ${lower}_page.dart
