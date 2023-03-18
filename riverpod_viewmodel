@@ -1,0 +1,112 @@
+#!/bin/sh
+
+# Pageクラスの名前(大文字キャメルケース)
+pageName=$1;
+
+# Flutterのプロジェクトの名前(小文字スネークケース)
+packageName=$2;
+
+# pageNameの小文字スネークケース
+snake=`echo ${pageName} | sed -E 's/(.)([A-Z])/\1_\2/g' | tr '[A-Z]' '[a-z]'`
+
+# pageNameの小文字キャメルケース
+sCamel=`echo ${pageName} | gsed -r 's/^([A-Z])([a-z])/\L\1\2/'`
+
+mkdir $snake
+cd $snake
+
+# Pageクラスファイルの生成
+mkdir "ui"
+cd "ui"
+echo "import 'package:flutter/material.dart';
+import 'package:${packageName}/ui/${snake}/view_model/${snake}_view_model.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+class ${pageName}sPage extends ConsumerWidget {
+  const ${pageName}sPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(${sCamel}Provider);
+    final viewModel = ref.watch(${sCamel}Provider.notifier);
+    return Scaffold(
+      appBar: AppBar(),
+      body: Container(),
+    );
+  }
+}" >> ${snake}_page.dart
+
+# Stateクラスファイルの生成
+cd ".."
+mkdir "view_model"
+cd "view_model"
+echo "import 'package:freezed_annotation/freezed_annotation.dart';
+
+part '${snake}_state.freezed.dart';
+
+@freezed
+class ${pageName}State with _\$${pageName}State {
+  const factory ${pageName}State({
+    String? title,
+  }) = _${pageName}State;
+}" >> ${snake}_state.dart
+
+# ViewModelクラスファイルの生成
+echo "import 'package:${packageName}/ui/${snake}/use_case/${snake}_use_case.dart';
+import 'package:${packageName}/ui/${snake}/view_model/${snake}_state.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+final ${sCamel}Provider = StateNotifierProvider<${pageName}ViewModel,
+    AsyncValue<${pageName}State>>(
+  (
+    ref,
+  ) {
+    return ${pageName}ViewModel();
+  },
+);
+
+class ${pageName}ViewModel
+    extends StateNotifier<AsyncValue<${pageName}State>> {
+  final ${pageName}UseCase _useCase;
+
+  ${pageName}ViewModel()
+      : _useCase = ${pageName}UseCase(),
+        super(const AsyncValue.loading()) {
+    load();
+  }
+
+  void load() async {
+    state = const AsyncLoading<${pageName}State>().copyWithPrevious(state);
+  }
+}" >> ${snake}_view_model.dart
+
+# UseCaseクラスファイルの作成
+cd ".."
+mkdir "use_case"
+cd "use_case"
+echo "class ${pageName}UseCase {}
+" >> ${snake}_use_case.dart
+
+# UseCaseクラスファイルの作成
+cd ".."
+mkdir "repository"
+cd "repository"
+touch ".gitkeep"
+
+# modelクラスファイルの作成
+cd ".."
+mkdir "model"
+cd "model"
+touch ".gitkeep"
+
+# enumクラスファイルの作成
+cd ".."
+mkdir "enum"
+cd "enum"
+touch ".gitkeep"
+
+# componentsクラスファイルの作成
+cd ".."
+mkdir "components"
+cd "components"
+touch ".gitkeep"
