@@ -22,8 +22,8 @@ echo "import 'package:flutter/material.dart';
 import 'package:${packageName}/ui/${snake}/view_model/${snake}_view_model.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class ${pageName}sPage extends ConsumerWidget {
-  const ${pageName}sPage({super.key});
+class ${pageName}Page extends ConsumerWidget {
+  const ${pageName}Page({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
