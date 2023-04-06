@@ -9,3 +9,8 @@ The command is executed as follows.
 ```
 createBloc {bloc Name} {project package name}
 ```
+
+### riverpodを使ったクラス群作成
+```
+riverpod_viewmodel TreasureDetail flutter_treasure_hunt
+```
