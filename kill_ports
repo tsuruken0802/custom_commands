@@ -6,13 +6,15 @@ if [ $# -eq 0 ]; then
 fi
 
 for port in "$@"; do
-  # ポート番号からPIDを取得
-  pid=$(lsof -t -i :$port)
+  # ポート番号から複数のPIDを取得
+  pids=$(lsof -t -i :$port)
 
-  # PIDが見つかった場合、killコマンドを実行
-  if [ -n "$pid" ]; then
-    echo "Killing process with PID: $pid on port $port"
-    kill "$pid"
+  # 見つかったPIDがある場合、killコマンドを実行
+  if [ -n "$pids" ]; then
+    for pid in $pids; do
+      echo "Killing process with PID: $pid on port $port"
+      kill "$pid"
+    done
   else
     echo "No process found on port $port"
   fi
