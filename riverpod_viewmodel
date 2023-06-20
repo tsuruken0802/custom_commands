@@ -61,7 +61,7 @@ final ${sCamel}Provider = StateNotifierProvider<${pageName}ViewModel,
   (
     ref,
   ) {
-    return ${pageName}ViewModel();
+    return ${pageName}ViewModel(useCase: ref.watch(${sCamel}UseCaseProvider));
   },
 );
 
@@ -69,8 +69,9 @@ class ${pageName}ViewModel
     extends StateNotifier<AsyncValue<${pageName}State>> {
   final ${pageName}UseCase _useCase;
 
-  ${pageName}ViewModel()
-      : _useCase = ${pageName}UseCase(),
+  ${pageName}ViewModel({
+    required ${pageName}UseCase useCase,
+  }) : _useCase = useCase,
         super(const AsyncValue.loading()) {
     load();
   }
@@ -84,10 +85,16 @@ class ${pageName}ViewModel
 cd ".."
 mkdir "use_case"
 cd "use_case"
-echo "class ${pageName}UseCase {}
+echo "import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+final ${sCamel}UseCaseProvider = Provider<${pageName}UseCase>((ref) {
+  return ${pageName}UseCase();
+});
+
+class ${pageName}UseCase {}
 " >> ${snake}_use_case.dart
 
-# UseCaseクラスファイルの作成
+# Repositoryクラスファイルの作成
 cd ".."
 mkdir "repository"
 cd "repository"
