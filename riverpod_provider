@@ -1,0 +1,47 @@
+#!/bin/sh
+
+# Pageクラスの名前(大文字キャメルケース)
+pageName=$1;
+
+# Flutterのプロジェクトの名前(小文字スネークケース)
+packageName=$2;
+
+# pageNameの小文字スネークケース
+snake=`echo ${pageName} | sed -E 's/(.)([A-Z])/\1_\2/g' | tr '[A-Z]' '[a-z]'`
+
+# pageNameの小文字キャメルケース
+sCamel=`echo ${pageName} | gsed -r 's/^([A-Z])([a-z])/\L\1\2/'`
+
+mkdir $snake
+cd $snake
+
+# Pageクラスファイルの生成
+mkdir "ui"
+cd "ui"
+echo "import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+class ${pageName}Page extends ConsumerWidget {
+  const ${pageName}Page({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Container(),
+    );
+  }
+}" >> ${snake}_page.dart
+
+# Providerクラスファイルの生成
+cd ".."
+mkdir "provider"
+cd "provider"
+echo "import 'package:hooks_riverpod/hooks_riverpod.dart';
+" >> ${snake}_provider.dart
+
+# componentsクラスファイルの作成
+cd ".."
+mkdir "components"
+cd "components"
+touch ".gitkeep"
